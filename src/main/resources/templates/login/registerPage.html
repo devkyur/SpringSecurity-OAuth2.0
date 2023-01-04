@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="<http://www.thymeleaf.org>">
+  <head>
+    <meta charset="utf-8">
+    <title>Title</title>ㅣ
+    <link th:href="@{/css/default.css}" rel="stylesheet">
+    <script th:src="@{/js/jquery-3.6.1.js}"></script>
+    <script th:inline="javascript">
+        // 가입 가능 여부 확인
+        function checkSubmit() {
+            $('input').each(function (i) {
+                if (!(this.className.indexOf('checkTrue') > -1)) {
+                    if (this.className.indexOf('checkFalse') > -1) {
+                        $('.regi_submit_btn').attr('disabled', 'disabled');
+                        $('.regi_submit_btn').css('background', '#E64C65');
+                    }
+                    return false;
+                }
+                if ($('input').length - 1 == i) {
+                    $('.regi_submit_btn').removeAttr('disabled');
+                    $('.regi_submit_btn').css('background', '#4CAF50');
+                }
+            });
+        };
+
+        // 아이디 체크
+        function checkId() {
+            let user_id = $('input[name=user_id]').val();
+            $.ajax({
+                url: 'checkId',
+                data: {id: user_id},
+                dataType: 'text',
+                success: function (data) {
+                    if (data > 0) {
+                        $('input[name=user_id]').addClass('checkFalse');
+                        $('input[name=user_id]').removeClass('checkTrue');
+                        $('.failMsg').html('이미 사용중인 아이디입니다. 다른 아이디를 사용해주세요.');
+                        $('.failMsg').show();
+                    } else if (user_id.length < 4) {
+                        $('input[name=user_id]').addClass('checkFalse');
+                        $('input[name=user_id]').removeClass('checkTrue');
+                        $('.failMsg').html('아이디를 4자리 이상 입력해주세요.');
+                        $('.failMsg').show();
+                    } else if (user_id.length > 3 ) {
+                        $('input[name=user_id]').addClass('checkTrue');
+                        $('input[name=user_id]').removeClass('checkFalse');
+                        $('.failMsg').hide();
+                    }
+                },
+                fail: function (res) {
+                    console.log('checkId: ', res);
+                },
+                complete: function() {
+                    checkSubmit();
+                }
+            });
+        }
+
+        // 비밀번호 체크
+        function checkPw() {
+            let user_pw = $('input[name=user_password]').val();
+            let user_pw_confirm = $('input[name=user_password_confirm]').val();
+            if (user_pw.length < 4) {
+                $('input[name=user_password]').addClass('checkFalse');
+                $('input[name=user_password]').removeClass('checkTrue');
+                $('.failMsg').html('비밀번호를 4자리 이상 입력해주세요.');
+                $('.failMsg').show();
+            } else {
+                $('input[name=user_password]').addClass('checkTrue');
+                $('input[name=user_password]').removeClass('checkFalse');
+                $('.failMsg').hide();
+            }
+            if (user_pw != '' && user_pw_confirm != '') {
+                if (user_pw != user_pw_confirm) {
+                    $('input[name=user_password_confirm]').addClass('checkFalse');
+                    $('input[name=user_password_confirm]').removeClass('checkTrue');
+                    $('.failMsg').html('비밀번호가 일치하지 않습니다. 제대로 입력해주세요.');
+                    $('.failMsg').show();
+                } else if (user_pw == user_pw_confirm) {
+                    $('input[name=user_password_confirm]').addClass('checkTrue');
+                    $('input[name=user_password_confirm]').removeClass('checkFalse');
+                    $('.failMsg').hide();
+                }
+            }
+            checkSubmit();
+        }
+
+        // 이름 체크
+        function checkName() {
+            let user_name = $('input[name=user_name]').val();
+            if (user_name.length < 2) {
+                $('input[name=user_name]').addClass('checkFalse');
+                $('input[name=user_name]').removeClass('checkTrue');
+                $('.failMsg').html('이름을 2자리 이상 입력해주세요.');
+                $('.failMsg').show();
+            } else {
+                $('input[name=user_name]').addClass('checkTrue');
+                $('input[name=user_name]').removeClass('checkFalse');
+                $('.failMsg').hide();
+            }
+            checkSubmit();
+        }
+
+        // 이메일 체크
+        function checkEmail() {
+            let user_email = $('input[name=user_email]').val();
+            const regExp = /\w+([-+.]\w+)*@\w+([-.]\w+)*\.[a-zA-Z]{2,4}$/;
+
+            if(!regExp.test(user_email)){
+                $('input[name=user_email]').addClass('checkFalse');
+                $('input[name=user_email]').removeClass('checkTrue');
+                $('.failMsg').html('이메일 형식이 맞지 않습니다.');
+                $('.failMsg').show();
+            } else {
+                $('input[name=user_email]').addClass('checkTrue');
+                $('input[name=user_email]').removeClass('checkFalse');
+                $('.failMsg').hide();
+            }
+            checkSubmit();
+        }
+    </script>
+</head>
+<body>
+
+<div class="main-container">
+    <div class="account block">
+        <h2 class="titular">회원가입</h2>
+        <form action="/regi/register" method="post">
+            <div class="input-container">
+                <input type="text" placeholder="아이디" class="text-input" name="user_id" required oninput="checkId()">
+            </div>
+            <div class="input-container">
+                <input type="password" placeholder="비밀번호" class="text-input" name="user_password" required oninput="checkPw()">
+            </div>
+            <div class="input-container">
+                <input type="password" placeholder="비밀번호 확인" class="text-input" name="user_password_confirm" required oninput="checkPw()">
+            </div>
+            <div class="input-container">
+                <input type="text" placeholder="이름" class="text-input" name="user_name" required oninput="checkName()">
+            </div>
+            <div class="input-container">
+                <input type="text" placeholder="이메일" class="text-input" name="user_email" required oninput="checkEmail()">
+            </div>
+            <div style="text-align: center;">
+                <span class="failMsg" style="color:red; display: none;"></span>
+            </div>
+            <button type="submit" class="sign-in button regi_submit_btn" disabled="disabled">가입하기</button>
+        </form>
+    </div>
+</div>
+</body>
+</html>

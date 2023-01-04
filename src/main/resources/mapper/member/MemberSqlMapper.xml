@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.kyurworld.kyur.member.memberMapper.MemberMapper">
+
+    <!-- 회원가입 -->
+    <insert id="insertMemberInfo">
+        <![CDATA[
+        INSERT INTO KW_USER (
+            USER_ID
+            ,USER_PASSWORD
+            ,USER_NAME
+            ,USER_EMAIL
+            ,USER_REG_DATE
+        )
+        VALUES (
+            #{user_id}
+            ,#{user_password}
+            ,#{user_name}
+            ,#{user_email}
+            ,NOW()
+        )
+        ]]>
+    </insert>
+
+    <!-- OAuth 회원가입 -->
+    <insert id="insertOAuthMemberInfo">
+        <![CDATA[
+        INSERT INTO KW_USER (
+            USER_ID
+            ,USER_PASSWORD
+            ,USER_NAME
+            ,USER_EMAIL
+            ,USER_REG_DATE
+        )
+        VALUES (
+            #{user_id}
+            ,#{user_password}
+            ,#{user_name}
+            ,#{user_email}
+            ,NOW()
+        )
+        ]]>
+    </insert>
+
+    <!--중복 아이디 유무-->
+    <select id="selectUserCnt" resultType="int">
+        <![CDATA[
+            SELECT
+                COUNT(*)
+            FROM
+                KW_USER
+            WHERE
+                USER_ID = #{userId}
+        ]]>
+    </select>
+
+    <!-- 로그인 -->
+    <select id="selectMember" resultType="kr.co.kyurworld.kyur.security.model.UserVo">
+        <![CDATA[
+        SELECT
+            USER_ID
+            ,USER_PASSWORD
+            ,USER_NAME
+            ,USER_EMAIL
+            ,USER_ROLE
+        FROM
+            KW_USER
+        WHERE
+            USER_ID = #{user_id}
+        ]]>
+    </select>
+
+    <!-- 임시 비밀번호 발급 저장-->
+    <insert id="insertAuthPwInfo">
+        <![CDATA[
+        INSERT INTO KW_AHTUNUM_PW (
+            USER_ID
+            ,USER_NAME
+            ,USER_EMAIL
+            ,AUTH_NUM
+            ,SEND_DATE
+        )
+        VALUES (
+            #{user_id}
+            ,#{user_name}
+            ,#{user_email}
+            ,#{auth_num}
+            ,NOW()
+        )
+        ]]>
+    </insert>
+
+    <!-- 임시 비밀번호 확인-->
+    <select id="selectAuthPwInfo" resultType="int">
+        <![CDATA[
+            SELECT
+                COUNT(*)
+            FROM
+                KW_AHTUNUM_PW
+            WHERE
+                AUTH_NUM = #{user_temp_pw}
+        ]]>
+    </select>
+
+    <!-- 유저 패스워드 변경-->
+    <update id="updateUserPw">
+        <![CDATA[
+            UPDATE
+                KW_USER
+            SET
+                USER_PASSWORD = #{user_password}
+            WHERE
+                USER_ID = #{user_id}
+        ]]>
+    </update>
+</mapper>

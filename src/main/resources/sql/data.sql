@@ -1,0 +1,2 @@
+INSERT INTO KW_USER VALUES ('khim', '$2a$10$2forAgD1dW3Nqw/LA7NKjeVd2Dbp71xtOjSecIc/mqnqa.NIhzhVa', 'dlarbgur11@naver.com', 'khim', 'ROLE_USER', NOW(), NOW());
+INSERT INTO KW_USER VALUES ('test', '$2a$10$2forAgD1dW3Nqw/LA7NKjeVd2Dbp71xtOjSecIc/mqnqa.NIhzhVa', 'dlarbgur11@naver.com', 'test', 'ROLE_ADMIN', NOW(), NOW());

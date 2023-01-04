@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.kyurworld.kyur.security.mapper.UserMapper">
+
+    <!-- 로그인 -->
+    <select id="getUserInfo" resultType="kr.co.kyurworld.kyur.security.model.UserVo">
+        <![CDATA[
+        SELECT
+            USER_ID
+            ,USER_PASSWORD
+            ,USER_NAME
+            ,USER_EMAIL
+            ,USER_ROLE
+        FROM
+            KW_USER
+        WHERE
+            USER_ID = #{userId}
+        ]]>
+    </select>
+
+</mapper>

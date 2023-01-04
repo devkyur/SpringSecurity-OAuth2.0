@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="<http://www.thymeleaf.org>">
+  <head>
+    <meta charset="utf-8">
+    <title>Title</title>ㅣ
+    <link th:href="@{/css/default.css}" rel="stylesheet">
+    <script th:src="@{/js/jquery-3.6.1.js}"></script>
+    <script th:inline="javascript">
+    </script>
+</head>
+<body>
+
+<div class="main-container">
+    <div class="account block">
+        <h2 class="titular">새로운 비밀번호를 설정해주세요</h2>
+        <div class="input-container">
+            <input type="password" placeholder="비밀번호" class="text-input" name="user_password" required oninput="checkPw()">
+        </div>
+        <div class="input-container">
+            <input type="password" placeholder="비밀번호 확인" class="text-input" name="user_password_confirm" required oninput="checkPw()" onkeydown="if (event.keyCode == 13) {setNewPw();return false;}">
+        </div>
+        <div style="text-align: center;">
+            <span class="failMsg" style="color:red; display: none;"></span>
+        </div>
+        <button type="button" class="sign-in button set_new_pw_btn" onclick="setNewPw();">확인</button>
+    </div>
+</div>
+
+<script>
+    function checkPw() {
+        let user_pw = $('input[name=user_password]').val();
+        let user_pw_confirm = $('input[name=user_password_confirm]').val();
+        if (user_pw.length < 4) {
+            $('input[name=user_password]').addClass('checkFalse');
+            $('input[name=user_password]').removeClass('checkTrue');
+            $('.failMsg').html('4자리 이상 입력해주세요.');
+            $('.failMsg').show();
+        } else {
+            $('input[name=user_password]').addClass('checkTrue');
+            $('input[name=user_password]').removeClass('checkFalse');
+            $('.failMsg').hide();
+        }
+        if (user_pw != '' && user_pw_confirm != '') {
+            if (user_pw != user_pw_confirm) {
+                $('input[name=user_password_confirm]').addClass('checkFalse');
+                $('input[name=user_password_confirm]').removeClass('checkTrue');
+                $('.failMsg').html('비밀번호가 일치하지 않습니다. 제대로 입력해주세요.');
+                $('.failMsg').show();
+            } else if (user_pw == user_pw_confirm) {
+                $('input[name=user_password_confirm]').addClass('checkTrue');
+                $('input[name=user_password_confirm]').removeClass('checkFalse');
+                $('.failMsg').hide();
+            }
+        }
+    }
+
+    function setNewPw() {
+        $.ajax({
+            type: 'post',
+            url: 'setNewPw',
+            data: {
+                user_password: $('input[name=user_password]').val()
+            },
+            dataType: 'text',
+            success: function (result) {
+                if (result == 'S') {
+                    alert('비밀번호가 변경되었습니다. 다시 로그인해주세요!');
+                    location.href = '/';
+                }
+            },
+            fail: function (res) {
+                console.log('checkId: ', res);
+            }
+        });
+    };
+</script>
+</body>
+</html>

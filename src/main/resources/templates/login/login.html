@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="<http://www.thymeleaf.org>">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link th:href="@{/css/default.css}" rel="stylesheet">
+    <script type="text/javascript" th:src="@{/js/jquery-3.6.1.js}"></script>
+    <script type="text/javascript" th:src="@{js/jquery.cookie.js}"></script>
+
+    <script th:inline="javascript">
+        $(function(){
+            let msg = [[${msg}]];
+            if (msg != null) {
+                alert(msg);
+            }
+
+            readCookie();
+        });
+
+        function saveCookie() {
+            const check = $('#idsave').is(':checked');
+
+            if (check && $('#username').val()) {
+                $.cookie('inputuserId', $('#username').val(), {expires: 365, path: '/'});
+                $.cookie('userId', '', {expires: 365, path: '/'});
+            } else {
+                $.cookie('inputuserId', '', {expires: 365, path: '/'});
+                $.cookie('userId', '', {expires: 365, path: '/'});
+            }
+        }
+
+        function readCookie() {
+            const value = $.cookie('inputuserId');
+
+            if (value) {
+                $('#username').val(value);
+
+                saveCookie();
+            }
+        }
+
+        function chkLogin() {
+            let strUserid = "";
+            let strPwd = "";
+
+            strUserid = $.trim($("#username").val());
+            strPwd = $.trim($("#password").val());
+
+            if (strUserid == '') {
+                alert("아이디를 입력해주세요.");
+                $("#username").focus();
+                return false;
+            }
+            if (strPwd == '') {
+                alert("비밀번호를 입력해주세요.");
+                $("#password").focus();
+                return false;
+            }
+
+            saveCookie();
+        }
+
+    </script>
+</head>
+
+<body>
+<div class="main-container">
+    <div class="account block">
+        <h2 class="titular">어서오세요!</h2>
+        <form name="frmEnt" method="post" action="/login_proc" onsubmit="return chkLogin();">
+            <div class="input-container">
+                <input type="text" placeholder="아이디" class="email text-input" name="username" id="username">
+                <div class="input-icon envelope-icon-acount"><span class="fontawesome-envelope scnd-font-color"></span></div>
+            </div>
+            <div class="input-container">
+                <input type="password" placeholder="비밀번호" class="password text-input" name="password" id="password">
+                <div class="input-icon password-icon"><span class="fontawesome-lock scnd-font-color"></span></div>
+            </div>
+            <div class="input-container">
+                <span><label for="idsave"><input type="checkbox" id="idsave" class="text-input" th:checked="true"/>아이디 저장</label></span>
+            </div>
+            <input type="submit" class="sign-in button" value="로그인">
+        </form>
+        <a class="sign-up button" href="/regi/registerPage">회원가입</a>
+        <p class="scnd-font-color"><a href="/find/findPassword">비밀번호 찾기</a></p>
+        <a class="fb-sign-in" href="58">
+            <p>
+                <a href="/oauth2/authorization/google">구글 로그인</a>
+            </p>
+            <p>
+                <a href="/oauth2/authorization/naver">네이버 로그인</a>
+            </p>
+            <p>
+                <a href="/oauth2/authorization/kakao">카카오 로그인</a>
+            </p>
+        </a>
+    </div>
+</div>
+</body>
+
+</html>
